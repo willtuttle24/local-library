@@ -14,23 +14,25 @@ function getBooksBorrowedCount(books) {
 }
 
 function getMostCommonGenres(books) {
-  //create empty genre array
-    let genres = []
-    books.forEach(book => {
-      let genreExists = genres.find(genre => genre.name === book.genre)
-      if (genreExists === undefined){
-          genres.push({name: book.genre, count: 1})
-      } else {
-        genres.forEach(genre => {
-          if (genre.name === genreExists.name) {
-            genre.count++
-          }
-        })
-      }
-    })
-    return genres
-      .sort((a, b) => b.count - a.count)
-      .splice(0, 5)
+  //create empty genreCount object
+  let genreCount = {};
+  //create empty genreList count array
+  let genreList = [];
+  //create topGenres helper function to slice the array into the top 5 results
+  const topGenres = (array) => {return array.slice(0, 5);}
+ //loop through books array to get genre, then total them
+  for (let book of books) {
+    const genre = book.genre;
+    if (genre in genreCount) {genreCount[genre] += 1} else {genreCount[genre] = 1}
+  }
+  //loop through genreCount, push them into genreList
+  for (let genre in genreCount) {
+    genreList.push({name : genre, count : genreCount[genre]});
+  }
+  genreList.sort((genreA, genreB) => genreA.count < genreB.count ? 1 : -1);
+  //declare result to topGenres function passing genreList as arguement
+  let result = topGenres(genreList);
+  return result;
   }
 
 function getMostPopularBooks(books) {
